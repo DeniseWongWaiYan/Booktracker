@@ -1,0 +1,72 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+</head>
+<body>
+<div id ="header">
+    <span class="logo">BOOKTRACKER</span> 
+
+    <span class="user">
+    {% if request.user.is_authenticated %}
+        <a href="{% url "logout" %}">Logout</a>
+    {% else %}
+        <a href="{% url "login" %}">Log-in</a>
+    {% endif %}
+    </span>
+    
+    <span class="greeting">
+    {% if request.user.is_authenticated %}
+        <p> <a href="{{ user.get_absolute_url }}">{{ user.first_name }} </a></p>
+    </span>
+    {% endif %}
+
+    {% if request.user.is_authenticated %}
+        <ul class="menu">
+            <li {% if onpage == 'dashboard' %} class="selected"{% endif %}><a href="{% url 'dashboard' %}">Dash</a></li>
+            <li {% if onpage == 'books' %} class="selected"{% endif %}><a href="{% url 'Books:book_list' %}">Books</a></li>
+            <li {% if onpage == 'nerds' %} class="selected"{% endif %}><a href="{% url 'user_list' %}">Nerds</a></li>
+        </ul>
+    {% endif %}
+      
+</div>
+    
+    {% if messages %}
+    <ul class="messages"> 
+    {% for message in messages %}
+        <li class='{{messages.tags}}'> {{message|safe}}<a href="#" class="close">✖</a>    </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+<div id = "content">
+{% block content%}
+{% endblock %}
+</div>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src=" http://cdn.jsdelivr.net/jquery.cookie/1.4.1/jquery.cookie.min.js "></script>
+    <script>
+        var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $(document).ready(function(){
+            {% block domready %}
+            {% endblock %}
+		});
+    </script>
+</body>
+</html>

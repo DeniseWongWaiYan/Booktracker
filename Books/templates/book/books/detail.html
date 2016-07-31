@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% block content %}
+<h1>{{ book.title }}</h1> 
+<h3>PAGE: "Dating" Profile <br> </h3>
+<h5>DEF: So-called as this is a page showing {{ book.title }}'s many details. If this book were a person, this page would be used to creepily stalk and gather information. Thank god it isn't, so you can't accidentally 'like' something either.</h5>
+<div class='col-md-7'>
+
+<h3>By: {{ book.author }}</h3>
+<h4>ISBN: {{ book.ISBN }}</h4>
+{% with total_likes=book.users_like.count %}
+<span class='count'>
+    <span class ='total'>
+        <h4>Likes: {{ total_likes }} </h4>
+    </span>
+</span> 
+    
+</div>
+<div class='col-md-4'>yess
+     {% thumbnail book.photo '180x180' crop='100%' as im %} <img src='{{ im.url }}'> {% endthumbnail %} no
+</div>
+
+
+<a href='#' data-id='{{ book.id }}' data-action='{% if request.user in book.users_like.all %}un{% endif %}like' class='like button'> 
+    {% if request.user not in book.users_like.all %} Like {% else %} Unlike {% endif %}
+</a>
+
+{% endwith %}
+
+{% endblock %}
+
+{% block domready %}
+$('a.like').click(function(e){
+    e.preventDefault();
+    $.post('{% url 'Books:like' %}', { id: $(this).data('id'), action: $(this).data('action') },
+    function(data){
+        if(data['status'] == 'ok'){
+            var previous_act = $('a.like').data('action');
+            $('a.follow').data('action', previous_act == 'like' ? 'unlike' : 'like');
+            $('a.follow').text('action', previous_act == 'like' ? 'Unlike': 'Like');
+            var prev_likes = parseInt($('span.count .total').text());
+            $('span.count .total').text(previous_act == 'like' ? prev_likes+1 : prev_likes-1);
+          
+}});
+
+});
+
+
+{% endblock %}
+
+

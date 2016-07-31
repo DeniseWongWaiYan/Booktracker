@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Book Found</h1>
+<h2>Did you mean this book? </h2>
+<h2>Title: {{ findbook.title }} </h2>
+<h3>By: {{ findbook.author }}</h3>
+<h4>ISBN: {{ findbook.ISBN }}</h4>
+Likes: {{ num_likes }}
+<p><input type="submit" value="Yes"></p>
+<p><a href='{% url 'searchbooks' %}'><input type="submit" value="No"></a></p>
+
+{% endblock %}

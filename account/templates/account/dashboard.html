@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<h3>"Welcome aboard - suckers! <br><br> I am Hexachlorophene J. Goodforttune, Kidnapper At-Large, and Devourer of Tortoises par Excellence, at your service."</h3>
+
+<h2> What's up </h2>
+<div id='action-list'>
+        {% include 'actions/action/detail.html' %}
+</div>
+
+{% endblock %}

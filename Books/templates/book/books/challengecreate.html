@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="." method="POST"> 
+    {{new_chal.as_p}}  {% csrf_token %}
+<input type='submit' value='Save'>
+</form>
+{% endblock %}

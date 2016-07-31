@@ -1,0 +1,222 @@
+@import url(http://fonts.googleapis.com/css?family=Muli);
+
+body {
+    margin:0;
+    padding:0;
+    font-family:helvetica, sans-serif;
+    background: #FCFCFC;
+}
+
+@font-face{
+    font-family: "Baron-Neue"; 
+    src: url(Baron%20Neue%20Black%20Italic.otf) format("opentype");
+}
+
+p {
+    line-height: 1.8;
+}
+
+a {
+    text-decoration: none;
+    float: right;
+    margin-left: 20px;
+    margin-bottom: inherit;
+    overflow: hidden;
+    font-family: "Baron-Neue";
+    color: #9cc2d6;
+}
+
+h1, h2, h3, h4, h5 , h6 { font-family: 'Muli', sans-serif; font-weight:normal; }
+
+h1 {
+    border-bottom:1px solid #C0E1E5;
+    padding:0 0 10px 0;
+    margin:10px 0 20px 0;
+}
+
+h2 {
+    margin:30px 0 20px;
+}
+
+#header {
+    padding-top:5px;
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-bottom:-40px; 
+    font-size:14px;
+    background:#12c064;
+    border-bottom:4px solid #C0E1E5;
+    overflow:auto;
+    
+}
+
+#header .logo {
+    font-family: "Baron-Neue";
+    float:left;
+    color: #F7882F;
+    font-size:30px;
+}
+
+#header ul.menu li.selected a {
+    color: #9cc2d6;
+    font-weight:bold;
+}
+
+#header ul.menu a:hover{
+    color: #f9672f;
+
+}
+
+#header ul.menu a {
+    color: #C0E1E5;
+
+}
+
+
+#header .user a, #header .greeting a {
+    float:right;
+    color: #C0E1E5;
+    font-size: 10px;
+    padding-left: 20px;
+}
+
+#header .user a:hover, #header .greeting a:hover {
+    color: #f9672f;
+
+}
+
+
+#content {
+    padding:30px 100px;
+}
+
+.selected {
+    color: red;
+}
+
+#edit{
+
+
+}
+
+ /* forms */
+form {
+        overflow:auto;
+    }
+
+    form p {
+        width:100%;
+        overflow:auto;
+    }
+
+    label {
+        float:left;
+        clear:both;
+        color:#333;
+        margin-bottom:4px;
+    }
+
+    input, textarea {
+        clear:both;
+        float:left;
+        margin:0 0 10px;
+        background:#efefef;
+        border:0;
+        padding:6px 10px;
+        font-size:20px;
+    }
+
+
+    .errorlist {
+        color:#cc0033;
+        float:left;
+        clear:both;
+        padding-left:10px;
+    }
+    .helptext {
+        margin:0 0 20px 0;
+        color:#aaa;
+        clear:both;
+        float:left;
+        font-size:13px;
+    }
+#wrapper{
+    overflow: hidden;
+}
+
+#rightbox{
+    width: 60%;
+    float:left
+}
+#leftbox{
+    overflow: hidden;
+}
+
+
+    .login-form {
+        float:left;
+    }
+
+
+    input[type=submit], a.button{
+        font-weight:bold;
+        background:#EEE5E9;
+        color:#92DCE5;
+        padding:5px 10px;
+        font-size:15px;
+        text-transform: uppercase;
+    }
+
+    .login-form {
+        float:left;
+        overflow: auto;
+    }
+*/
+
+
+    .errorlist {
+        color:#cc0033;
+        float:inherit;
+        clear:both;
+    }
+
+ul{
+    list-style-type: none;
+}
+
+ul.messages {
+    margin:10px 100px;
+    padding:0;
+    list-style-type:
+    none;
+}
+ul.messages li.success,
+ul.messages li.warning,
+ul.messages li.error,
+ul.messages li.info {
+    margin:0;
+    padding:14px 20px;
+    list-style:none;
+    color:#fff;
+}
+
+ul.messages li.success { background:#81ce81; }
+ul.messages li.success a { color:#0ac33e; }
+
+ul.messages li.error { background:#a30029; color:#e9828e; }
+ul.messages li.error a { color:#e9828e; }
+
+ul.messages li.info { background:#faffae; color:#696b4e; }
+ul.messages li.info a { color:#1586de; }
+
+ul.messages li.warning { background:#de9404; }
+ul.messages li.warning a { color:#f49000; }
+
+ul.messages li a.close {
+    margin:0;
+    float:right;
+    opacity:1;
+    border:0;
+    box-shadow:none;
+    text-shadow:none;
+}

@@ -1,0 +1,24 @@
+{% for action in actions %}
+{% load thumbnail %}
+
+{% with user=action.user profile=action.user.profile %}
+
+<div class="action">
+	<div class="images">
+		{% if profile.photo %}
+            {% thumbnail user.profile.photo "80x80" crop="100%" as im %}
+                <a href="{{ user.get_absolute_url }}">
+					<img src="{{ im.url }}" alt="{{ user.get_full_name }}" class="item-img">
+				</a>
+            {% endthumbnail %}
+		{% endif %}
+
+	</div>
+	<div class="info">
+        {% if request.user = user %} You {% else %}{{ user }}{% endif %} {{ action.verb }} {% if action.target %} {{ action.target_ct }} {% endif %} 
+		<p><span class="date">{{ action.created|timesince }} ago</span><br />
+			{% endwith %}
+		</p>
+	</div>
+</div>
+    {% endfor %}

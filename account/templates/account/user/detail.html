@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+
+{% block title %}{{ user.get_full_name }}{% endblock %}
+
+{% block content %}
+    <h1> {{ user.get_full_name }}</h1>
+    <div class='profile-info'>
+        {% thumbnail user.profile.profile_picture '180x180' crop='100%' as im %}
+            <img src='{{ im.url }}' class='user-detail'>
+        {% endthumbnail %} 
+    </div>
+    {% with total_followers=user.following.count %}
+        <span class='count'>
+            <span class='total'>{{ total_followers }}</span> follower{{ total_followers|pluralize }}
+        </span>
+        <a href='#' data-id='{{ user.id }}' data-action='{% if request.user in user.following.all %}un{% endif %}follow' class='follow button'> 
+            {% if request.user not in user.following.all %}Follow{% else %}Unfollow{% endif %}</a>
+        
+{% if request.user == user %}<a href='{% url 'edit' %}'>Edit</a>{% endif %}
+    {% endwith %}
+
+
+{% endblock %}
+
+{% block domready %}
+$('a.follow').click(function(e){
+    e.preventDefault();
+    $.post('{% url 'nerds_follow' %}', { id: $(this).data('id'), action: $(this).data('action') },
+    function(data){
+        if(data['status'] == 'ok'){
+            var previous_act = $('a.follow').data('action');
+            $('a.follow').data('action', previous_act == 'follow' ? 'unfollow' : 'follow');
+            $('a.follow').text('action', previous_act == 'follow' ? 'Unfollow': 'Follow');
+            var prev_followers = parseInt($('span.count .total').text());
+            $('span.count .total').text(previous_act == 'follow' ? prev_followers+1 : prev_followers-1);
+          
+}});
+
+});
+
+{% endblock %}

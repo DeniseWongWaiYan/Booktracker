@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ challenge.chalname }}</h1> {{ challenge.id }}
+
+{{ challenge.bookinchallenge.all }} 
+{% for book in books %} 
+<h2> {{ book.title }} </h2> by {{ book.author }} with ISBN number {{ book.ISBN }}  {{book.id}}
+
+<a href='#' data-id='{{challenge.id}}' data-bookid='{{ book.id }}' data-action='{% if book in challenge.bookinchallenge.all %}un{% else %}{% endif %}add' class='add button'>
+{% if book in challenge.bookinchallenge %}Delete{%else%}Add{% endif %}
+</a>
+{% endfor %}
+
+<span class='count'>
+    <span class ='total'>
+        <h4>Books in challenge:  {{ challenge.bookinchallenge.count }} </h4>
+    </span>
+</span> 
+{% endblock %}
+{% block domready %}
+$('a.add').click(function(e){
+    e.preventDefault();
+    $.post('{% url 'Books:add_book' %}', { id:$(this).data('id'), bookid:$(this).data('bookid'), action:$(this).data('action') },
+    function(data){
+        if(data['status'] == 'ok'){
+            var prev_act = $('a.add').data('action');
+            $('a.add').data('action', prev_act == 'add' ? 'remove' : 'add');
+            $('a.add').text('action', prev_act == 'add' ? 'Remove': 'Add');
+            var prev_items = parseInt($('span.count .total').text());
+            $('span.count .total').text(previous_act == 'add' ? prev_items+1 : prev_items-1);
+          
+}});
+
+});
+
+
+{% endblock %}
