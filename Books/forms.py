@@ -2,16 +2,16 @@ from django import forms
 from django.forms import ModelForm
 from .models import Books, Challenge
 
-class BookForm(forms.Form):   
+class BookSearchForm(forms.Form):   
     title = forms.CharField(max_length=200)
     author = forms.CharField(max_length=200)
     ISBN = forms.IntegerField()
-    
-    
-    class Meta:
-         model = Books
 
-    
+
+class BookCreateForm(forms.ModelForm):   
+    class Meta:
+        model = Books
+        fields = ('title', 'author', 'ISBN', 'photo')
 
 
 class ChallengeForm(forms.ModelForm):

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Books, Challenge
-from .forms import BookForm, ChallengeForm, ChallengeItemForm
+from .forms import BookSearchForm, ChallengeForm, ChallengeItemForm
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -23,23 +23,48 @@ r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_HOST, db=set
 
 # Create your views here.
 
+def findbookview(request):
+    if request.method == 'POST':
+        searchform = BookSearchForm(request.POST)
+
+        if searchform.is_valid():
+            cd = searchform.cleaned_data
+            findbooks = Books.objects.filter(title=cd['title'])
+
+            if findbooks.count() != 0:
+                return render(request, 'book/foundbook.html', {'findbooks': findbooks})
+
+            else:
+                return render(request, 'book/notfound.html', {'findbooks': findbooks})
+
+                
+
+    else:
+        searchform = BookSearchForm()
+
+    return render(request, 'book/book.html', {'searchform': searchform})
+
+"""
 @login_required
 def SearchBookView(request):
-    if request.method == 'GET':
-        bookform = BookForm(data=request.GET)
+    if request.method == 'POST':
+        bookform = BookForm(request.POST)
         if bookform.is_valid():
             cd = bookform.cleaned_data
             try:
                 findbook = Books.objects.get(title=cd['title'], author=cd['author'], ISBN=cd['ISBN'])
                 num_likes = findbook.users_like.count()
                 slug = findbook.slug
+
                 return render(request, 'book/foundbook.html', {'findbook': findbook, 'title':findbook.title, 'num_likes' : num_likes})
 
             except Books.DoesNotExist:
                 book = Books.objects.create(title=cd['title'], author=cd['author'], ISBN=cd['ISBN'])
     else:
         bookform = BookForm()
-        return render(request, 'book/book.html', {'onpage': 'books', 'bookform': bookform})
+
+    return render(request, 'book/book.html', {'onpage': 'books', 'bookform': bookform})
+"""
 
 @login_required
 def BookListView(request):

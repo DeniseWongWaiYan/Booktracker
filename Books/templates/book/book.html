@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<form action="." method="POST">
-{{ bookform.as_p }}
+<form  action='.' method="POST">
+{{ searchform.as_p }}
 {% csrf_token %}
 <p><input type="submit" value="Expecto Patronum"></p>
 </form>
