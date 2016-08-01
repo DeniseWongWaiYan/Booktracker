@@ -21,4 +21,6 @@ urlpatterns = [
     url(r'^nerds/$', views.nerds_list, name='user_list'),
     url(r'^nerds/follow/$', views.nerds_follow, name='nerds_follow'),
     url(r'^nerds/(?P<username>[-\w]+)/$', views.nerds_detail, name='user_detail'),
+    url(r'^find', views.findbookview, name='find'),
+
     ]

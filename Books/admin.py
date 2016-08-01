@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Books, Challenge
-from .views import ChallengeCreateView
 
 # Register your models here.
 

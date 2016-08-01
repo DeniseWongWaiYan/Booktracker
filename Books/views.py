@@ -1,70 +1,59 @@
-from django.shortcuts import render
-from .models import Books, Challenge
-from .forms import BookSearchForm, ChallengeForm, ChallengeItemForm
-from django.db.models import Count
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponse, JsonResponse
+from django.contrib.auth import authenticate, login #, logout, login_then_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from Booktracker.common.decorators import ajax_required
 from django.views.decorators.http import require_POST
-from django.shortcuts import get_object_or_404
-from django.forms.formsets import formset_factory, BaseFormSet
-from django.forms import modelformset_factory
+from .forms import BookSearchForm, BookCreateForm, ChallengeForm, ChallengeItemForm
+from django.db.models import Count, Q
+from .models import Books, Challenge
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse, JsonResponse
 from Booktracker.common.decorators import ajax_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from actions.utils import create_action
-"""
-#Redis
-import redis
-from django.conf import settings
-r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_HOST, db=settings.REDIS_DB)
 
 
-"""
 
 # Create your views here.
-
 def findbookview(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and '_search' in request.POST:
         searchform = BookSearchForm(request.POST)
-
+        
         if searchform.is_valid():
             cd = searchform.cleaned_data
-            findbooks = Books.objects.filter(title=cd['title'])
+            findbooks = Books.objects.filter(Q(title=cd['title']) | Q(author=cd['author']) | Q(ISBN=cd['ISBN']))
 
-            if findbooks.count() != 0:
-                return render(request, 'book/foundbook.html', {'findbooks': findbooks})
+            if findbooks.count() == 0:
+                if '_add' in request.POST:
+                    addbookconfirm = BookCreateForm(request.POST)
+                    c_d = addbookconfirm.cleaned_data
+                    addbookconfirm.save(commit=False)
+                    addbookconfirm.title = c_d['title']
+                    addbookconfirm.author = c_d['author']
+                    addbookconfirm.ISBN = c_d['ISBN']
+                    addbookconfirm.save()
 
-            else:
-                return render(request, 'book/notfound.html', {'findbooks': findbooks})
+                    return render(request, 'book/added.html', {'addbookconfirm': addbookconfirm})
 
+                else:
+                    addbook = BookCreateForm()
+                    addbook.fields['title'].initial = cd['title']
+                    addbook.fields['author'].initial = cd['author']
+                    addbook.fields['ISBN'].initial = cd['ISBN']
+
+                    return render(request, 'book/notfound.html', {'addbook': addbook})
                 
+            else:
+                 return render(request, 'book/foundbook.html', {'findbooks': findbooks})           
 
     else:
         searchform = BookSearchForm()
 
-    return render(request, 'book/book.html', {'searchform': searchform})
 
-"""
-@login_required
-def SearchBookView(request):
-    if request.method == 'POST':
-        bookform = BookForm(request.POST)
-        if bookform.is_valid():
-            cd = bookform.cleaned_data
-            try:
-                findbook = Books.objects.get(title=cd['title'], author=cd['author'], ISBN=cd['ISBN'])
-                num_likes = findbook.users_like.count()
-                slug = findbook.slug
+    return render(request, 'book/book.html', {'searchform': searchform })
 
-                return render(request, 'book/foundbook.html', {'findbook': findbook, 'title':findbook.title, 'num_likes' : num_likes})
-
-            except Books.DoesNotExist:
-                book = Books.objects.create(title=cd['title'], author=cd['author'], ISBN=cd['ISBN'])
-    else:
-        bookform = BookForm()
-
-    return render(request, 'book/book.html', {'onpage': 'books', 'bookform': bookform})
-"""
 
 @login_required
 def BookListView(request):
@@ -83,6 +72,7 @@ def BookListView(request):
         return render(request, 'book/books/list_ajax.html', {'onpage':'books', 'books':books})
     return render(request, 'book/books/list.html', {'onpage':'books', 'books': books})
     
+
 
 @login_required
 def BookDetailView(request, slug, ISBN):

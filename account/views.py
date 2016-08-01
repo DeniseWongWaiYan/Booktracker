@@ -11,6 +11,7 @@ from Booktracker.common.decorators import ajax_required
 from django.views.decorators.http import require_POST
 from .models import Connection
 from actions.models import Action
+from Books.forms import BookSearchForm, BookCreateForm
 
 # Create your views here.
 def LoginView(request):
@@ -35,6 +36,43 @@ def LoginView(request):
     else:
         form = LoginForm()
     return render(request, 'account/login.html', {'form': form})
+
+def findbookview(request):
+    if request.method == 'POST' and '_search' in request.POST:
+        searchform = BookSearchForm(request.POST)
+        
+        if searchform.is_valid():
+            cd = searchform.cleaned_data
+            findbooks = Books.objects.filter(Q(title=cd['title']) | Q(author=cd['author']) | Q(ISBN=cd['ISBN']))
+
+            if findbooks.count() == 0:
+                if '_add' in request.POST:
+                    addbookconfirm = BookCreateForm(request.POST)
+                    c_d = addbookconfirm.cleaned_data
+                    addbookconfirm.save(commit=False)
+                    addbookconfirm.title = c_d['title']
+                    addbookconfirm.author = c_d['author']
+                    addbookconfirm.ISBN = c_d['ISBN']
+                    addbookconfirm.save()
+
+                    return render(request, 'book/added.html', {'addbookconfirm': addbookconfirm})
+
+                else:
+                    addbook = BookCreateForm()
+                    addbook.fields['title'].initial = cd['title']
+                    addbook.fields['author'].initial = cd['author']
+                    addbook.fields['ISBN'].initial = cd['ISBN']
+
+                    return render(request, 'book/notfound.html', {'addbook': addbook})
+                
+            else:
+                 return render(request, 'book/foundbook.html', {'findbooks': findbooks})           
+
+    else:
+        searchform = BookSearchForm()
+
+
+    return render(request, 'book/book.html', {'searchform': searchform })
 
 def UserRegistrationView(request):
 
