@@ -17,7 +17,7 @@
     
 </div>
 <div class='col-md-4'>yess
-     {% thumbnail book.photo '180x180' crop='100%' as im %} <img src='{{ im.url }}'> {% endthumbnail %} no
+     {% thumbnail books.coverpic '180x180' crop='100%' as im %} <img src='{{ im.url }}'> {% endthumbnail %} no
 </div>
 
 
@@ -25,6 +25,7 @@
     {% if request.user not in book.users_like.all %} Like {% else %} Unlike {% endif %}
 </a>
 
+Coverpic:{{ book.coverpic }}
 {% endwith %}
 
 {% endblock %}

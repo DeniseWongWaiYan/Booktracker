@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>We don't have this book, sorry</h1>
-<h2>Would you like to add it?</h2>h2>
-<form action='.' method='POST'>
+<h2>Would you like to add it?</h2>
+<form action='.' method='POST' enctype='multipart/form-data'>
 {{addbook.as_p}}{% csrf_token %}
 
 <p><input type="submit" value="Yes" name='_add'></p>
 </form>
-<p><a href='{% url 'Books:searchbooks' %}'><input type="submit" value="No"></a></p>
+
+<a href='{% url 'Books:all' %}'><input type="submit" value="No"></a>
+
 
 {% endblock %}

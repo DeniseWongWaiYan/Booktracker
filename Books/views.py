@@ -17,8 +17,12 @@ from actions.utils import create_action
 
 
 # Create your views here.
+def dummy(request):
+    #oddly necessary for findbookview to work
+    pass
+
 def findbookview(request):
-    if request.method == 'POST' and '_search' in request.POST:
+    if request.method == 'POST':
         searchform = BookSearchForm(request.POST)
         
         if searchform.is_valid():
@@ -27,15 +31,12 @@ def findbookview(request):
 
             if findbooks.count() == 0:
                 if '_add' in request.POST:
-                    addbookconfirm = BookCreateForm(request.POST)
-                    c_d = addbookconfirm.cleaned_data
-                    addbookconfirm.save(commit=False)
-                    addbookconfirm.title = c_d['title']
-                    addbookconfirm.author = c_d['author']
-                    addbookconfirm.ISBN = c_d['ISBN']
-                    addbookconfirm.save()
+                    addbookconfirm = BookCreateForm(data=request.POST, files=request.FILES)
+                    if addbookconfirm.is_valid():
+                        c_d = addbookconfirm.cleaned_data
+                        Books.objects.create(title=c_d['title'], author=c_d['author'], ISBN=c_d['ISBN'], total_likes=0)
 
-                    return render(request, 'book/added.html', {'addbookconfirm': addbookconfirm})
+                        return render(request, 'book/added.html', {'addbookconfirm': addbookconfirm})
 
                 else:
                     addbook = BookCreateForm()
@@ -78,6 +79,8 @@ def BookListView(request):
 def BookDetailView(request, slug, ISBN):
     book = get_object_or_404(Books, slug=slug, ISBN=ISBN)
  #   total_views = r.incr('book:{}:views'.format(book.id))
+    reviews = Books.reviews.filter(active=True)
+    
     return render(request, 'book/books/detail.html', {'section': 'challenges', 'book': book, })
 
 @ajax_required
@@ -142,86 +145,3 @@ def add_book(request):
        
      
 
-
-"""
-
- if request.method == 'POST':
-        chal_item = ChallengeItemForm(request.POST)
-        if chal_item.is_valid():
-            chal_item.save(commit=False)
-            chal_item.booksinchallenge = cd['book_in_challenge']
-            new_chal.booksinchallenge.save_m2m()
-
-        return render(request, 'book/books/dashboard.html', {'challenge': challenge, 'new_chal': new_chal, 'chal_item': chal_item, 'books' : books})
-
-    else:
-        chal_item = ChallengeItemForm()
-
-
-
-    ChalItemFormSet = modelformset_factory(Challenge, form=ChallengeItemForm)
-    if request.method == 'POST':
-        try:
-            whole_chal_form = ChallengeForm(request.POST)
-            chal_item_formset = ChalItemFormSet(book_in_challenge=request.POST.get('book_in_challenge'))
-
-            if whole_chal_form.is_valid and chal_item_formset.is_valid():
-
-                chal_items = chal_item_formset.save()
-                      
-                for chal_item in chal_items:
-                    chal_item.save()
-
-                whole_chal_form.save_m2m()
-               
-                return render(request, 'books/done.html', {'chal_item_formset': chal_item_formset}) # Redirect to a 'success' page
-
-        except ValidationError:
-            whole_chal_form = ChallengeForm()
-            chal_item_formset = ChalItemFormSet()
-            return HttpResponse({'chal_item_formset': chal_item_formset, 'whole_chal_form': whole_chal_form} , chal_item_formset.errors)
-        
-            #return render(request, 'base.html', {'chal_item_formset': chal_item_formset, 'whole_chal_form': whole_chal_form} )
-
-
-    else:
-        whole_chal_form = ChallengeForm()
-        chal_item_formset = ChalItemFormSet()
-
-    return render(request, 'book/books/challengecreate.html', {'chal_item_formset': chal_item_formset, 'whole_chal_form': whole_chal_form})
-
-
-@login_required
-def ChallengeCreateView(request):
-    class RequiredFormSet(BaseFormSet):
-        def __init__(self, *args, **kwargs):
-            super(RequiredFormSet, self).__init__(*args, **kwargs)
-            for form in self.forms:
-                form.empty_permitted = False
-    ChallengeFormset = formset_factory(ChallengeForm, max_num=53, formset=RequiredFormSet)
-    if request.method == 'POST': # If the form has been submitted...
-        chal_create_form = ChallengeForm(request.POST) # A form bound to the POST data
-        # Create a formset from the submitted data
-        chal_create_formset = ChallengeFormset(request.POST)
-
-        if chal_create_form.is_valid() and chal_create_formset.is_valid():
-            chal_list = chal_create_form.save()
-            for form in chal_create_formset.forms:
-                book_chal= form.save(commit=False)
-                book_chal.list = chal_list
-                book_chal.save()
-            return HttpResponseRedirect('thanks') # Redirect to a 'success' page
-    else:
-        chal_create_form= ChallengeForm()
-        chal_create_formset = ChallengeFormset()
-
-    return render_to_response('book/books/challengecreate.html', {'chal_create_form': chal_create_form, 'chal_create_formset': chal_create_formset
-
-def ChallengeCreateView(request):
-    books = get_books(request)
-    form  = ChallengeForm(request.Post or None, extra=books)
-    if form.is_valid():
-        for (book) in form.books():
-            save_bookinchal(request, book)
-        return redirect('chal sucess')
-    return render_to_response('book/challenge.html', {'form': form}) """

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Books, Challenge
+from .models import Books, Challenge, Review
 
 class BookSearchForm(forms.Form):   
     title = forms.CharField(max_length=200)
@@ -11,7 +11,7 @@ class BookSearchForm(forms.Form):
 class BookCreateForm(forms.ModelForm):   
     class Meta:
         model = Books
-        fields = ('title', 'author', 'ISBN', 'photo')
+        fields = ('title', 'author', 'ISBN', 'coverpic')
 
 
 class ChallengeForm(forms.ModelForm):
@@ -28,5 +28,9 @@ class ChallengeItemForm(forms.Form):
         model = Challenge
         fields = ('bookinchallenge',)
 
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ('body', 'commenter')
     
  

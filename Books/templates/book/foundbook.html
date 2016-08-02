@@ -8,6 +8,7 @@
 <h4>ISBN: {{ findbook.ISBN }}</h4>
 Likes: {{ num_likes }}
 <p><input type="submit" value="Yes"></p>
-<p><a href='{% url 'Books:searchbooks' %}'><input type="submit" value="No"></a></p>
 {% endfor %}
+<p><a href='{% url 'Books:searchbooks' %}'><input type="submit" value="No"></a></p>
+
 {% endblock %}

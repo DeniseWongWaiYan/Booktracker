@@ -15,6 +15,9 @@ class Profile(models.Model):
     def __str__(self):
         return 'Profile for user {}'.format(self.user.username)
     
+class Test(models.Model):
+     coverpic = models.ImageField(upload_to='books/%Y/%m/%d', blank=True, null=True)
+
 
 class Connection(models.Model):
     user_to = models.ForeignKey(User, related_name='rel_to_set')

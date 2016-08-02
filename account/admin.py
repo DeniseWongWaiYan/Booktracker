@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Connection
+from .models import Profile, Connection, Test
 
 # Register your models here.
 

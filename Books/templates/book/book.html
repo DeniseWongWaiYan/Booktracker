@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<form  action='.' method="POST">
+<form  action='.' method="POST">     {% csrf_token %}
+
 {{ searchform.as_p }}
-    
-    {% csrf_token %}
 <input type="submit" value="Accio" name='_search'>
 </form>
-
 
 {% endblock %}

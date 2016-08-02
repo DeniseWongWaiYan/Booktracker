@@ -12,6 +12,11 @@ from django.views.decorators.http import require_POST
 from .models import Connection
 from actions.models import Action
 from Books.forms import BookSearchForm, BookCreateForm
+from Books.models import Books
+from django.db.models import Count, Q
+
+from django.core.urlresolvers import reverse
+
 
 # Create your views here.
 def LoginView(request):
@@ -49,11 +54,7 @@ def findbookview(request):
                 if '_add' in request.POST:
                     addbookconfirm = BookCreateForm(request.POST)
                     c_d = addbookconfirm.cleaned_data
-                    addbookconfirm.save(commit=False)
-                    addbookconfirm.title = c_d['title']
-                    addbookconfirm.author = c_d['author']
-                    addbookconfirm.ISBN = c_d['ISBN']
-                    addbookconfirm.save()
+                    Books.objects.create(title=c_d['title'], author=c_d['author'], ISBN=c_d['ISBN'])
 
                     return render(request, 'book/added.html', {'addbookconfirm': addbookconfirm})
 
@@ -69,6 +70,7 @@ def findbookview(request):
                  return render(request, 'book/foundbook.html', {'findbooks': findbooks})           
 
     else:
+        reverse(UserRegistrationView)
         searchform = BookSearchForm()
 
 
