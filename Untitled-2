@@ -1,6 +1,11 @@
-Add a landing page
+<Add a landing page>
+<Add book image? Error?>
+
+redis
+private chat
 Add read buttons
-Add comments to books
+
+Add comments to books + taggit
 
 
 Add admin only sides badges
@@ -10,3 +15,4 @@ Add langauges
 Add email reminders sending out
 
 Change CSS
+progress indicator in challenge create
